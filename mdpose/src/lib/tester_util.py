@@ -54,7 +54,7 @@ def draw_joints(img_s, joints_s, max_joints=100, mode='coco'):
         #              tuple(joints_s[i, joint_idx_pair[1], :2]), colors[color_idx], 2)
 
         for j in range(n_joints):
-            cv2.circle(joints_img_s, tuple(joints_s[i, j, :2]), 3, colors[j], 2)
+            cv2.circle(joints_img_s, tuple((int(joints_s[i, j, 0]), int(joints_s[i, j, 1]))), 3, colors[j], 2)
         n_draw_joints += 1
     return joints_img_s
 

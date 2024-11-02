@@ -112,3 +112,32 @@ class ResNet50FPN(ResNet34FPN):
 class ResNet101FPN(ResNet50FPN):
     def __get_base_network__(self):
         return torchvision.models.resnet101(pretrained=self.pretrained)
+
+
+class ViTB16(BackboneABC):
+    def __init__(self, network_args):
+        super(ViTB16, self).__init__(network_args)
+        self.inter_chs = (128, 256, 512)
+        self.fmap_ch = network_args['fmap_ch']
+
+    def __get_base_network__(self):
+        return torchvision.models.vit_b_16(pretrained=self.pretrained)
+
+    def get_fmap2img_ratios(self):
+        return 1/8.0, 1/16.0, 1/32.0, 1/64.0, 1/128.0
+
+    def build(self):
+        base_net = self.__get_base_network__()
+        self.net['base'] = nn.Sequential(
+            base_net.conv1,
+            # nn.Conv2d(20, 64, 3, 2, 1, bias=False),
+            base_net.bn1, base_net.relu,
+            base_net.maxpool, base_net.layer1)
+
+    def forward(self):
+        return
+
+
+class ViTB32(ViTB16):
+    def __get_base_network__(self):
+        return torchvision.models.vit_b_32(pretrained=self.pretrained)

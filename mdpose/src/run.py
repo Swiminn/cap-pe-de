@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 import torch.distributed as dist
 import torch.multiprocessing as mp
-from tensorboardX import SummaryWriter
+# from tensorboardX import SummaryWriter
 from lib import util as lib_util
 import option
 import util
@@ -73,8 +73,7 @@ def ddp_train(rank, world_size, args):
             train_dataset, args.train_data_loader_info, rank=rank, world_size=world_size, with_sampler=world_size > 1)
         test_data_loader = option.create_data_loader(test_dataset, args.test_data_loader_info)
 
-        train_logger = SummaryWriter(args.result_dir_dict['log']) \
-            if ((rank == 0) and args.training_args['write_log']) else None
+        # train_logger = SummaryWriter(args.result_dir_dict['log']) if ((rank == 0) and args.training_args['write_log']) else None
         tester_dict = dict() if rank == 0 else None
         if tester_dict is not None:
             for tester_info in args.tester_info_list:
@@ -117,17 +116,17 @@ def ddp_train(rank, world_size, args):
                     loss_str = util.cvt_dict2str(train_loss_dict)
                     print_str = iter_str + '\n- ' + info_str + '\n- ' + loss_str + '\n'
 
-                    if train_logger is not None:
-                        for key, value in train_loss_dict.items():
-                            train_logger.add_scalar(key, value, global_step)
+                    # if train_logger is not None:
+                    #     for key, value in train_loss_dict.items():
+                    #         train_logger.add_scalar(key, value, global_step)
 
                     if len(value_dict.keys()) > 0:
                         value_str = util.cvt_dict2str(value_dict)
                         print_str += '- ' + value_str + '\n'
 
-                        if train_logger is not None:
-                            for key, value in value_dict.items():
-                                train_logger.add_scalar(key, value, global_step)
+                        # if train_logger is not None:
+                        #     for key, value in value_dict.items():
+                        #         train_logger.add_scalar(key, value, global_step)
                     print(print_str)
 
                 train_loss_dict.clear()
