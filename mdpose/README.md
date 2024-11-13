@@ -6,9 +6,13 @@ This repository is the PyTorch implementation of
 
 Environment
 -----------
-- python3.6
-- pytorch1.1
-- torchvision0.3
+- python 3.8.19
+- pytorch 2.3.1
+- torchvision 0.18.1
+- numpy 1.23.4
+- Pillow 10.4.0
+- scipy 1.10.1
+- opencv-python 4.5.5
 
 Directory Structure
 -------------------
