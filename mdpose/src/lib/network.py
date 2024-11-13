@@ -174,6 +174,13 @@ class MMPENetwork(NetworkABC):
         # t2 = time.time()
         num_level = 5
         fmaps = self.net['backbone'].forward(image, num_level)
+        # print("==================================================")
+        # print(f"backbone output shape at forward: {fmaps[0].shape}")
+        # print(f"backbone output shape at forward: {fmaps[1].shape}")
+        # print(f"backbone output shape at forward: {fmaps[2].shape}")
+        # print(f"backbone output shape at forward: {fmaps[3].shape}")
+        # print(f"backbone output shape at forward: {fmaps[4].shape}")
+        # print("==================================================")
         out_tensor = torch.cat([
             self.net['detector'].forward(fmap).view(batch_size, self.out_ch, -1) for fmap in fmaps
         ], dim=2)

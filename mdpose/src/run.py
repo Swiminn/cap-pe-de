@@ -17,7 +17,7 @@ np.random.seed(0)
 
 def main():
     os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
-    os.environ['CUDA_VISIBLE_DEVICES'] = '3'
+    os.environ['CUDA_VISIBLE_DEVICES'] = '1'
     os.environ['TORCH_USE_CUDA_DSA'] = '1'
     # torch.multiprocessing.set_sharing_strategy('file_system')
 

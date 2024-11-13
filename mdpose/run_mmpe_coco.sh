@@ -1,6 +1,5 @@
-export CUDA_VISIBLE_DEVICES=0
+export CUDA_VISIBLE_DEVICES=1
 export TORCH_USE_CUDA_DSA=1
-# export TORCH_CUDA_ARCH_LIST="8.6"
 
 #!/usr/bin/env bash
 
@@ -20,16 +19,16 @@ python3 ./src/run.py \
     'n_joints': 17, 'is_coco': True, 'top_k': 100,
 }" \
 --training_args="{
-    'init_iter': 0, 'max_iter': 1, 'print_intv': 10,
+    'init_iter': 0, 'max_iter': 20000, 'print_intv': 10,
 #    'max_grad': 7, 'lr_decay_schd': {100000: 0.1, 170000: 0.1},
     'max_grad': 7, 'lr_decay_schd': {180000: 0.1, 260000: 0.1},
     'devices': [0], 'sync_bnorm': True, 'port': 12355,
     'write_log': True,
 }" \
 \
---test_iters="[
-    1, 5000, 20000, 40000, 60000, 80000, 100000, 120000, 140000, 160000, 180000, 200000, 220000, 240000, 260000, 270000]" \
---snapshot_iters="[1, 5000, 50000, 100000, 130000, 150000, 170000, 190000, 210000, 230000, 250000, 270000]" \
+--test_iters="[100,
+    5000, 20000, 40000, 60000, 80000, 100000, 120000, 140000, 160000, 180000, 200000, 220000, 240000, 260000, 270000]" \
+--snapshot_iters="[100, 5000, 50000, 100000, 130000, 150000, 170000, 190000, 210000, 230000, 250000, 270000]" \
 \
 --framework_info="{
     'framework': 'mmpe', 'framework_args': {},
@@ -38,10 +37,11 @@ python3 ./src/run.py \
 #    'network': 'mmpe_test',
     'network': 'mmpe',
     'network_args': {
-        'pretrained': True, 'backbone': 'res50fpn', 'fmap_ch': 256,
+        'pretrained': True, 'backbone': 'vit_b_16', 'fmap_ch': 256,
 #        'dynamic_ch': 4389,
         'dynamic_ch': 25093,
         'xy_limit_factor': 1.0, 'std_factor': 0.05, 'max_batch_size': 32,
+        'hidden_dim': 768, 'patch_size': 16,
     },
 }" \
 --loss_func_info="{
