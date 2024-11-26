@@ -7,6 +7,8 @@ from collections import OrderedDict
 from pycocotools.cocoeval import COCOeval
 from pycocotools.coco import COCO
 
+from tqdm import tqdm
+
 
 colors = ((64, 64, 64), (31, 119, 180), (174, 199, 232), (255, 127, 14),
           (255, 187, 120), (44, 160, 44), (152, 223, 138), (214, 39, 40),
@@ -120,13 +122,19 @@ def draw_boxes(img_s, boxes_s, confs_s=None, labels_s=None,
 def coco_eval(final_img_id, final_keypoints, final_score, final_center, final_scale, anno_file, res_folder):
     if not os.path.exists(res_folder):
         os.makedirs(res_folder)
-    res_file = os.path.join(res_folder, 'keypoints_val_results.json')
+
     cat_results = []
 
-    for img_idx in range(len(final_keypoints)):
+    print(f"Number of final keypoints: {len(final_keypoints)}")
+
+    cnt = 0
+    result_dirs = []
+
+    for img_idx in tqdm(range(len(final_keypoints))):
         result = {
             'image_id': int(final_img_id[img_idx]),
             'category_id': int(1),
+            # 'keypoints': np.reshape(final_keypoints[img_idx], (-1)).astype(int).tolist(),
             'keypoints': np.reshape(final_keypoints[img_idx], (-1)).tolist(),
             'score': float(final_score[img_idx]),
             'center': final_center[img_idx][0].tolist(),
@@ -134,11 +142,28 @@ def coco_eval(final_img_id, final_keypoints, final_score, final_center, final_sc
         }
         cat_results.append(result)
 
-    with open(res_file, 'w') as f:
+        if img_idx != 0 and img_idx % 10000 == 0:
+            _res_file = os.path.join(res_folder, f'keypoints_val_results_{img_idx}.json')
+            with open(_res_file, 'w') as f:
+                json.dump(cat_results, f, sort_keys=True, indent=4)
+            cat_results = []
+            result_dirs.append(_res_file)
+
+            # print(f"Dumped result to {res_file}")
+
+    _res_file = os.path.join(res_folder, f'keypoints_val_results_{len(final_keypoints)}.json')
+    result_dirs.append(_res_file)
+
+    with open(_res_file, 'w') as f:
         json.dump(cat_results, f, sort_keys=True, indent=4)
+
+    res_file = os.path.join(res_folder, 'keypoints_val_results.json')
+    concat_results(result_dirs, res_file)
+
     try:
         json.load(open(res_file))
     except Exception:
+        print(f"Cannot load json file: {res_file}")
         content = []
         with open(res_file, 'r') as f:
             for line in f:
@@ -406,3 +431,18 @@ def mpii_eval(gt_dir, val_dir, val_to_coco_dir, preds):
     print(name_value)
     # name_value = OrderedDict(name_value)
     return 0 #name_value, name_value['Mean']
+
+
+def concat_results(file_list, output_file):
+    assert len(file_list) > 0, "Empty list"
+    merge = []
+    print(f"Merge {len(file_list)+1} json files into {output_file}")
+    for file in tqdm(file_list):
+        with open(file, 'r') as fr:
+            data = json.load(fr)    # This is a list
+            assert len(data) > 0, f"data {file} is empty"
+            merge += data
+        os.remove(file)
+    with open(output_file, 'w') as fw:
+        json.dump(merge, fw, sort_keys=True, indent=4)
+    # return output_file
