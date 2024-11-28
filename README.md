@@ -1,9 +1,5 @@
 # cap-pe-de
 
-This repo is for unified model for captioning, pose estimation and detection.
+This repo is for the unified model for captioning, pose estimation, and detection.
 
-<<<<<<< HEAD
-Please check the each folder to implement the model.
-=======
-Please check the each folder to implement the model.
->>>>>>> main
+Each folder has implementation details for running the model.
