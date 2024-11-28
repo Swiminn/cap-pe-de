@@ -1,0 +1,20 @@
+# YOLOv5 🚀 by Ultralytics, GPL-3.0 license
+# K-Fashion dataset: https://www.aihub.or.kr/aihubdata/data
+# .
+#├── Training
+#├── train.txt
+#├── Validation
+#└── val.txt
+
+# Train/val/test sets as 1) dir: path/to/imgs, 2) file: path/to/imgs.txt, or 3) list: [path/to/imgs1, path/to/imgs2, ..]
+path: /home/yeji/Documents/자료/과제/복합대화/K-Fashion-mini #/media/yeji/a9dd48dc-0ad9-48ab-aa70-fd748b4afcb8/mipal/K-Fashion  # dataset root dir
+train: train.txt  # train images (relative to 'path') 118287 images
+val: val.txt  # val images (relative to 'path') 5000 images
+test: val.txt  # 20288 of 40670 images, submit to https://competitions.codalab.org/competitions/20794
+
+# Classes
+names:
+  0: 상의
+  1: 하의
+  2: 아우터
+  3: 원피스
