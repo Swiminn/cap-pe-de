@@ -1,0 +1,1 @@
+CUDA_VISIBLE_DEVICES=2 python train.py --data coco.yaml --weights '' --cfg yolov5s-transformer.yaml --img 640 --batch-size -1
