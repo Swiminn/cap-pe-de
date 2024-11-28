@@ -41,6 +41,8 @@ class ImageTester(TesterABC):
         pre_proc = data_loader.dataset.pre_proc
         util.make_dir(result_dir)
 
+        print("Image Tester called")
+
         for i, data_dict in enumerate(data_loader):
             if i >= self.n_images:
                 break
@@ -86,6 +88,8 @@ class MPIIQuantTester(TesterABC):
         assert data_loader.batch_size == 1
         pre_proc = data_loader.dataset.pre_proc
         util.make_dir(result_dir)
+
+        print("MPIIQuant Tester called")
 
         final_joints = []
         final_scores = []
@@ -141,6 +145,8 @@ class COCOQuantTester(TesterABC):
         assert data_loader.batch_size == 1
         pre_proc = data_loader.dataset.pre_proc
         util.make_dir(result_dir)
+
+        print("COCOQuant Tester called")
 
         # final_joints = []
         final_scores = []
@@ -228,6 +234,8 @@ class PoseAEImageTester(TesterABC):
     def run(self, framework, data_loader, result_dir):
         pre_proc = data_loader.dataset.pre_proc
         util.make_dir(result_dir)
+
+        print("PoseAEImageTester called")
 
         for i, data_dict in enumerate(data_loader):
             if i >= self.n_images:

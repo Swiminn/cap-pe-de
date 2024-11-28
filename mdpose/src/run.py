@@ -17,7 +17,7 @@ np.random.seed(0)
 
 def main():
     os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
-    os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+    os.environ['CUDA_VISIBLE_DEVICES'] = '3'
     os.environ['TORCH_USE_CUDA_DSA'] = '1'
     # torch.multiprocessing.set_sharing_strategy('file_system')
 
@@ -38,6 +38,8 @@ def main():
         mp.spawn(ddp_train, args=(world_size, args,), nprocs=world_size, join=True)
     else:
         ddp_train(0, 1, args)
+
+    print("Now we're done...... Check the results")
 
 
 def ddp_train(rank, world_size, args):
@@ -82,6 +84,9 @@ def ddp_train(rank, world_size, args):
         n_batches = train_data_loader.__len__()
         global_step = args.training_args['init_iter']
 
+        print("==============================")
+        print("START OF While LOOP")
+        print("==============================")
         while True:
             # test_dir = os.path.join(args.result_dir_dict['test'], '%07d' % global_step)
             # run_testers(tester_dict, framework, test_data_loader, test_dir)
@@ -99,6 +104,7 @@ def ddp_train(rank, world_size, args):
                     run_testers(tester_dict, framework, test_data_loader, test_dir)
 
                 if args.training_args['max_iter'] <= global_step:
+                    print("Training done!")
                     break
 
                 if global_step in args.training_args['lr_decay_schd'].keys():
@@ -129,6 +135,8 @@ def ddp_train(rank, world_size, args):
                         #         train_logger.add_scalar(key, value, global_step)
                     print(print_str)
 
+                # import pdb; pdb.set_trace()
+
                 train_loss_dict.clear()
                 train_data_dict.clear()
                 del train_loss_dict, train_data_dict
@@ -137,6 +145,10 @@ def ddp_train(rank, world_size, args):
                 start_time = time.time()
             if args.training_args['max_iter'] <= global_step:
                 break
+
+        print("==============================")
+        print("END OF While LOOP")
+        print("==============================")
         if world_size > 1:
             cleanup_ddp()
 
@@ -156,11 +168,13 @@ def train_network_one_step(args, framework, optimizer, train_data_dict):
     train_loss_dict, train_value_dict = framework.train_forward(train_data_dict)
     util.update_network(framework.network, optimizer, train_loss_dict, args.training_args['max_grad'])
     train_time = time.time() - start_time
+    # print(f"Train time for single step: {train_time:.2f}s")
     return train_loss_dict, train_value_dict, train_time
 
 
 def run_testers(tester_dict, framework, test_data_loader, test_dir):
     lib_util.make_dir(test_dir)
+    print(f"Test {tester_dict}")
     for key, tester in tester_dict.items():
         # test_data_loader = create_data_loader(test_dataset, args.test_data_loader_info)
         tester_dir = os.path.join(test_dir, key)
@@ -168,7 +182,7 @@ def run_testers(tester_dict, framework, test_data_loader, test_dir):
         # test_data_loader.stop()
         # del test_data_loader
         print('[TEST] %s: %s' % (key, tester_dir))
-    print('')
+    print('TEST DONE!!!')
 
 
 def save_snapshot(network, optimizer, save_dir):

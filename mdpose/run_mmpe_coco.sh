@@ -1,4 +1,4 @@
-export CUDA_VISIBLE_DEVICES=1
+export CUDA_VISIBLE_DEVICES=3
 export TORCH_USE_CUDA_DSA=1
 
 #!/usr/bin/env bash
@@ -26,7 +26,7 @@ python3 ./src/run.py \
     'write_log': True,
 }" \
 \
---test_iters="[100,
+--test_iters="[1,
     5000, 20000, 40000, 60000, 80000, 100000, 120000, 140000, 160000, 180000, 200000, 220000, 240000, 260000, 270000]" \
 --snapshot_iters="[100, 5000, 50000, 100000, 130000, 150000, 170000, 190000, 210000, 230000, 250000, 270000]" \
 \
